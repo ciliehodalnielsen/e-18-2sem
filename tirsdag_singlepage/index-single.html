@@ -31,13 +31,13 @@
                 grid-template-columns: repeat(3, 1fr);
             }
         }
-
     </style>
 </head>
 
 <body>
 
     <header>
+        <h1></h1>
         <nav>
             <button class="menu-item" data-civilstatus="alle">Alle personer</button>
             <button class="menu-item" data-civilstatus="single">Single</button>
@@ -67,7 +67,7 @@
         document.addEventListener("DOMContentLoaded", hentJson);
 
         async function hentJson() {
-            let myJson = await fetch("personliste_menu_ok.json");
+            let myJson = await fetch("tirsdag_singlepage.json");
             personer = await myJson.json();
             visPersoner();
         }
@@ -87,6 +87,7 @@
         function visPersoner() {
             let dest = document.querySelector(".data-container"),
                 temp = document.querySelector(".data-template");
+            document.querySelector("header h1").textContent = civilFilter;
             //løb personlisten igennem og lav en klon
             personer.forEach(person => {
                 if (person.civilstatus == civilFilter || civilFilter == "alle") {
@@ -94,13 +95,15 @@
                     //indsæt data i klonen
                     klon.querySelector("h2").textContent = person.navn;
                     klon.querySelector("img").src = person.billede;
+                    klon.querySelector("img").addEventListener("click", () => {
+                        window.location.href = "single.html?github=" + person.github;
+                    });
                     klon.querySelector(".data-civilstatus").textContent = person.civilstatus;
                     //placer klon i DOM
                     dest.appendChild(klon);
                 }
             })
         }
-
     </script>
 </body>
 

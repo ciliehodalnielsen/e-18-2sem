@@ -28,16 +28,16 @@
                 padding-left: 10%;
                 padding-right: 10%;
                 grid-gap: 5px;
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(1, 1fr);
             }
         }
-
     </style>
 </head>
 
 <body>
 
     <header>
+        <h1></h1>
         <nav>
             <button class="menu-item" data-civilstatus="alle">Alle personer</button>
             <button class="menu-item" data-civilstatus="single">Single</button>
@@ -49,17 +49,18 @@
 
 
     <main class="container">
-        <section class="data-container"></section>
+        <section class="data-container">
+            <article class="person">
+                <h2></h2>
+                <img src="" alt=""><br> Status: <span class="data-civilstatus"></span><br>
+            </article>
+        </section>
     </main>
-    <template class="data-template">
-      <article class="person">
-          <h2></h2>
-          <img src="" alt=""><br>
-          Status: <span class="data-civilstatus"></span><br>
-      </article>
-   </template>
 
     <script>
+        let urlParams = new URLSearchParams(window.location.search);
+        let github = urlParams.get("github");
+        console.log(github)
         let dest = document.querySelector(".data-container"),
             personer,
             civilFilter = "alle"; // filter
@@ -67,9 +68,9 @@
         document.addEventListener("DOMContentLoaded", hentJson);
 
         async function hentJson() {
-            let myJson = await fetch("personliste_menu_ok.json");
+            let myJson = await fetch("tirsdag_singlepage.json");
             personer = await myJson.json();
-            visPersoner();
+            visPerson();
         }
 
 
@@ -81,26 +82,22 @@
         function filtering() {
             dest.textContent = "";
             civilFilter = this.getAttribute("data-civilstatus");
-            visPersoner();
+            visPerson();
         }
 
-        function visPersoner() {
-            let dest = document.querySelector(".data-container"),
-                temp = document.querySelector(".data-template");
+        function visPerson() {
+            let dest = document.querySelector(".data-container");
             //løb personlisten igennem og lav en klon
             personer.forEach(person => {
-                if (person.civilstatus == civilFilter || civilFilter == "alle") {
-                    let klon = temp.cloneNode(true).content;
+                if (person.github == github) {
                     //indsæt data i klonen
-                    klon.querySelector("h2").textContent = person.navn;
-                    klon.querySelector("img").src = person.billede;
-                    klon.querySelector(".data-civilstatus").textContent = person.civilstatus;
-                    //placer klon i DOM
-                    dest.appendChild(klon);
+                    dest.querySelector("h2").textContent = person.navn;
+                    dest.querySelector("img").src = person.billede;
+                    dest.querySelector(".data-civilstatus").textContent = person.civilstatus;
+
                 }
             })
         }
-
     </script>
 </body>
 
